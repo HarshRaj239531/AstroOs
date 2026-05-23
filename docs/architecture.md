@@ -1,57 +1,459 @@
-# AstraOS Architecture
+# AstraOS System Architecture
 
-This document describes the high-level architecture of the AstraOS ecosystem.
+## Overview
 
-## System Topology
+AstraOS follows a modular service-oriented architecture.
 
-```mermaid
-graph TD
-    classDef client fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
-    classDef svc fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px;
-    classDef db fill:#fff3e0,stroke:#e65100,stroke-width:2px;
-    
-    %% Clients
-    Web["Web Client (apps/web)"]:::client
-    Mobile["Mobile Client (apps/mobile)"]:::client
-    Admin["Admin Client (apps/admin)"]:::client
-    
-    %% API Gateway / Ingress
-    Ingress["Kubernetes Ingress / Gateway"]
-    
-    %% Services
-    Auth["Auth Service (services/auth-service)"]:::svc
-    Chat["Chat Service (services/chat-service)"]:::svc
-    AI["AI Service (services/ai-service)"]:::svc
-    Notif["Notification Service (services/notification-service)"]:::svc
-    File["File Service (services/file-service)"]:::svc
-    
-    %% Databases
-    DB_Auth[(PostgreSQL)]:::db
-    DB_Chat[(Redis + MongoDB)]:::db
-    DB_Vector[(Vector DB)]:::db
-    
-    %% Connections
-    Web & Mobile & Admin --> Ingress
-    
-    Ingress --> Auth
-    Ingress --> Chat
-    Ingress --> AI
-    Ingress --> Notif
-    Ingress --> File
-    
-    Auth --> DB_Auth
-    Chat --> DB_Chat
-    AI --> DB_Vector
-    
-    Chat -.->|PubSub| Notif
-    AI -.->|Auth Verification| Auth
-```
+The platform is divided into independent services that communicate through APIs and events.
 
-## Communication Patterns
+This approach provides:
 
-1. **Synchronous Requests (HTTP/REST / gRPC)**: Used for administrative settings, data query processes, and authentication workflows.
-2. **Asynchronous Messages (WebSocket / Event Bus)**: Real-time chat streaming, live user status, and notification dispatches.
-3. **Monorepo Internal Dependencies**:
-   - `packages/ui` is shared across `apps/web` and `apps/admin`.
-   - `packages/types` defines all payload validation structures imported by both microservices and frontends.
-   - `packages/shared` exports cryptographic and utility functions.
+- Scalability
+- Maintainability
+- Reliability
+- Independent Deployments
+- Better Team Collaboration
+
+---
+
+# High Level Architecture
+
+                    ┌─────────────┐
+                    │   Client    │
+                    └──────┬──────┘
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │   API Gateway   │
+                  └──────┬──────────┘
+                         │
+ ┌─────────────────────────────────────────────┐
+ │                                             │
+ ▼                                             ▼
+
+Auth Service                          User Service
+
+Workspace Service                     Chat Service
+
+Notification Service                  AI Service
+
+File Service                          Search Service
+
+Business Service                      Admin Service
+
+---
+
+# Client Layer
+
+## Web Application
+
+Technology:
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- ShadCN
+
+Responsibilities:
+
+- User Interface
+- State Management
+- API Communication
+- Real-time Updates
+
+---
+
+## Mobile Application
+
+Technology:
+
+- Flutter
+
+Responsibilities:
+
+- Mobile Experience
+- Push Notifications
+- Offline Support
+
+---
+
+# API Gateway
+
+## Purpose
+
+Single entry point for all requests.
+
+Responsibilities:
+
+- Authentication
+- Request Routing
+- Rate Limiting
+- Logging
+- Monitoring
+
+Technology:
+
+- NestJS
+
+---
+
+# Authentication Service
+
+## Responsibilities
+
+- Registration
+- Login
+- Refresh Tokens
+- Password Reset
+- Email Verification
+- Session Management
+
+Database:
+
+- PostgreSQL
+
+---
+
+# User Service
+
+## Responsibilities
+
+- User Profiles
+- Preferences
+- User Settings
+- Social Information
+
+Database:
+
+- PostgreSQL
+
+---
+
+# Workspace Service
+
+## Responsibilities
+
+- Workspaces
+- Teams
+- Memberships
+- Permissions
+
+Database:
+
+- PostgreSQL
+
+---
+
+# Chat Service
+
+## Responsibilities
+
+- Direct Messages
+- Group Chats
+- Message Storage
+- Message Search
+- Reactions
+- Threads
+
+Technology:
+
+- Socket.IO
+
+Database:
+
+- PostgreSQL
+
+Cache:
+
+- Redis
+
+---
+
+# Notification Service
+
+## Responsibilities
+
+- Push Notifications
+- Email Notifications
+- SMS Notifications
+- In-App Notifications
+
+Queue:
+
+- Redis
+
+---
+
+# File Service
+
+## Responsibilities
+
+- File Upload
+- File Download
+- File Sharing
+- File Metadata
+
+Storage:
+
+- S3 Compatible Storage
+
+Examples:
+
+- AWS S3
+- MinIO
+
+Database:
+
+- PostgreSQL
+
+---
+
+# AI Service
+
+## Responsibilities
+
+- AI Chat
+- Summaries
+- Recommendations
+- Automation
+
+Technology:
+
+- Gemini
+- LangGraph
+
+Vector Database:
+
+- Qdrant
+
+---
+
+# Search Service
+
+## Responsibilities
+
+- Global Search
+- Message Search
+- File Search
+- User Search
+
+Technology:
+
+- Elasticsearch
+
+---
+
+# Business Service
+
+## Responsibilities
+
+- CRM
+- Inventory
+- Billing
+- Analytics
+
+Database:
+
+- PostgreSQL
+
+---
+
+# Admin Service
+
+## Responsibilities
+
+- User Management
+- Reports
+- Monitoring
+- Security Controls
+
+Database:
+
+- PostgreSQL
+
+---
+
+# Database Layer
+
+Primary Database:
+
+- PostgreSQL
+
+Used For:
+
+- Users
+- Workspaces
+- Messages
+- Business Data
+- Permissions
+
+---
+
+# Cache Layer
+
+Technology:
+
+- Redis
+
+Used For:
+
+- Sessions
+- Caching
+- Rate Limiting
+- Presence Tracking
+- Queues
+
+---
+
+# Search Layer
+
+Technology:
+
+- Elasticsearch
+
+Used For:
+
+- Full Text Search
+- Message Search
+- File Search
+
+---
+
+# Object Storage
+
+Technology:
+
+- S3 Compatible Storage
+
+Stores:
+
+- Images
+- Videos
+- Documents
+- Attachments
+
+---
+
+# Event Driven Architecture
+
+Communication Between Services:
+
+Events:
+
+- UserCreated
+- WorkspaceCreated
+- MessageSent
+- FileUploaded
+- PaymentCompleted
+
+Future Technology:
+
+- Apache Kafka
+
+---
+
+# Security Architecture
+
+Authentication:
+
+- JWT Access Token
+- Refresh Token
+
+Authorization:
+
+- RBAC
+- Permission Based Access
+
+Security Features:
+
+- HTTPS
+- Encryption
+- Audit Logs
+- Rate Limiting
+
+---
+
+# Monitoring
+
+Technology:
+
+- Prometheus
+- Grafana
+
+Tracks:
+
+- API Usage
+- Errors
+- CPU Usage
+- Memory Usage
+- Response Times
+
+---
+
+# Deployment Architecture
+
+Containers:
+
+- Docker
+
+Orchestration:
+
+- Kubernetes
+
+Reverse Proxy:
+
+- NGINX
+
+Cloud:
+
+- AWS
+- Azure
+- GCP
+
+---
+
+# Scaling Strategy
+
+Phase 1
+
+Monolith Deployment
+
+Phase 2
+
+Modular Monolith
+
+Phase 3
+
+Microservices
+
+Phase 4
+
+Distributed Cloud Infrastructure
+
+---
+
+# Architecture Principles
+
+1. Modular Design
+2. API First Development
+3. AI First Features
+4. Security By Design
+5. Scalability First
+6. Developer Friendly
+7. Cloud Native
+
+---
+
+# Long-Term Goal
+
+AstraOS should be capable of supporting:
+
+- Millions of Users
+- Millions of Messages Daily
+- Thousands of Workspaces
+- AI Assisted Workflows
+- Business Operations
+- Developer Ecosystems
+
+on a globally distributed infrastructure.

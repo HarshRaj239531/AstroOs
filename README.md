@@ -56,3 +56,16 @@ AstraOS/
 ### Infrastructure (`infrastructure/`)
 - **[docker](file:///d:/AstroOs/infrastructure/docker)**: Local development environment compose files and service definitions.
 - **[kubernetes](file:///d:/AstroOs/infrastructure/kubernetes)**: Production deployment manifests, config maps, and ingress routes.
+
+### Project Documentation (`docs/`)
+- **[Vision](file:///d:/AstroOs/docs/vision.md)**: Product mission, target users, and philosophies.
+- **[Features](file:///d:/AstroOs/docs/features.md)**: Specifications for each module.
+- **[System Architecture](file:///d:/AstroOs/docs/architecture.md)**: Client and backend layer definitions.
+- **[API Design](file:///d:/AstroOs/docs/api-design.md)**: HTTP standards and route definitions.
+- **[Database Design](file:///d:/AstroOs/docs/database-design.md)**: Database schemas and rules.
+- **[Development Roadmap](file:///d:/AstroOs/docs/roadmap.md)**: Projected timeline and milestones.
+- **[Technology Stack](file:///d:/AstroOs/docs/tech-stack.md)**: Framework selections, library packages, and coding conventions.
+- **[UI/UX Design System](file:///d:/AstroOs/docs/ui-ux-system.md)**: Brand styles, layouts, sizing, typography scale, and colors.
+
+
+
