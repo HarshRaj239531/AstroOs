@@ -1,71 +1,141 @@
+
 # AstraOS
 
-A modern, high-performance, modular operating system ecosystem.
+[![CI](https://img.shields.io/badge/ci-pending-lightgrey.svg)](https://github.com/your-org/your-repo/actions)
+[![License](https://img.shields.io/badge/license-TBD-lightgrey.svg)](LICENSE)
 
-## Project Structure
+AstraOS is a modular monorepo that powers multi-platform client applications (web, admin, mobile) and a set of backend microservices. It provides shared UI components, TypeScript contracts, and infrastructure-as-code to accelerate product development and production delivery.
 
-This monorepo is structured as follows:
+## Table of contents
 
-```text
-AstraOS/
-│
-├── apps/                        # Frontend applications
-│   ├── web/                     # Web application frontend
-│   ├── mobile/                  # Mobile application (React Native / Flutter)
-│   └── admin/                   # Admin dashboard console
-│
-├── services/                    # Backend microservices
-│   ├── auth-service/            # Authentication & authorization service
-│   ├── chat-service/            # Real-time chat & messaging service
-│   ├── ai-service/              # AI & machine learning service
-│   ├── notification-service/    # Email, SMS, and push notifications
-│   └── file-service/            # File storage and asset management
-│
-├── packages/                    # Shared workspace packages
-│   ├── ui/                      # Shared UI components
-│   ├── shared/                  # Common utilities and helper functions
-│   └── types/                   # Shared TypeScript models and definitions
-│
-├── infrastructure/              # Infrastructure & DevOps configurations
-│   ├── docker/                  # Dockerfiles and compose setups
-│   └── kubernetes/              # Kubernetes manifests & Helm charts
-│
-├── docs/                        # Project architecture & documentation
-└── README.md                    # Project overview (this file)
+- [Overview](#overview)
+- [Key features](#key-features)
+- [Quick start](#quick-start)
+- [Development workflow](#development-workflow)
+- [Repository layout](#repository-layout)
+- [Environment & configuration](#environment--configuration)
+- [Contributing](#contributing)
+- [Code of conduct](#code-of-conduct)
+- [License](#license)
+
+## Overview
+
+This repository is organized as a workspace-focused monorepo (powered by Turbo). It contains frontend applications, mobile clients, backend services, and shared packages used across the platform. The codebase is intended to be developer-friendly, CI-ready, and production-scalable.
+
+## Key features
+
+- Multi-platform: Web, Admin, and Mobile applications.
+- Service-oriented backend: Auth, Chat, AI, Notification, and File services.
+- Shared packages: UI components, utilities, and types for consistent development.
+- Monorepo tooling: `turbo` for orchestration and workspace-aware builds.
+
+## Quick start
+
+Prerequisites
+- Node.js 18+ (npm 10 recommended)
+- Git
+- For mobile: Flutter SDK (if you develop mobile clients)
+
+Clone the repository
+
+```bash
+git clone https://github.com/your-org/your-repo.git
+cd your-repo
 ```
 
-## Packages & Services Description
+Install dependencies
 
-### Applications (`apps/`)
-- **[web](file:///d:/AstroOs/apps/web)**: Primary client-facing web application.
-- **[mobile](file:///d:/AstroOs/apps/mobile)**: Mobile applications for Android and iOS.
-- **[admin](file:///d:/AstroOs/apps/admin)**: Administrative portal for platform management.
+```bash
+npm install
+```
 
-### Backend Microservices (`services/`)
-- **[auth-service](file:///d:/AstroOs/services/auth-service)**: Manages authentication (JWT, OAuth), session management, and RBAC.
-- **[chat-service](file:///d:/AstroOs/services/chat-service)**: WebSockets/gRPC service for instant messaging and presence.
-- **[ai-service](file:///d:/AstroOs/services/ai-service)**: LLM integrations, embeddings, and cognitive reasoning pipelines.
-- **[notification-service](file:///d:/AstroOs/services/notification-service)**: Handles asynchronous email, SMS, and push notification dispatches.
-- **[file-service](file:///d:/AstroOs/services/file-service)**: Secure uploads, CDN caching, and file processing workflows.
+Run development (all packages as configured by Turbo)
 
-### Shared Workspace Packages (`packages/`)
-- **[ui](file:///d:/AstroOs/packages/ui)**: Reusable UI component library designed using standard tokens.
-- **[shared](file:///d:/AstroOs/packages/shared)**: Standard utilities, validation schemas, and constants.
-- **[types](file:///d:/AstroOs/packages/types)**: Global TypeScript contracts and interface definitions.
+```bash
+npm run dev
+```
 
-### Infrastructure (`infrastructure/`)
-- **[docker](file:///d:/AstroOs/infrastructure/docker)**: Local development environment compose files and service definitions.
-- **[kubernetes](file:///d:/AstroOs/infrastructure/kubernetes)**: Production deployment manifests, config maps, and ingress routes.
+Build everything (production)
 
-### Project Documentation (`docs/`)
-- **[Vision](file:///d:/AstroOs/docs/vision.md)**: Product mission, target users, and philosophies.
-- **[Features](file:///d:/AstroOs/docs/features.md)**: Specifications for each module.
-- **[System Architecture](file:///d:/AstroOs/docs/architecture.md)**: Client and backend layer definitions.
-- **[API Design](file:///d:/AstroOs/docs/api-design.md)**: HTTP standards and route definitions.
-- **[Database Design](file:///d:/AstroOs/docs/database-design.md)**: Database schemas and rules.
-- **[Development Roadmap](file:///d:/AstroOs/docs/roadmap.md)**: Projected timeline and milestones.
-- **[Technology Stack](file:///d:/AstroOs/docs/tech-stack.md)**: Framework selections, library packages, and coding conventions.
-- **[UI/UX Design System](file:///d:/AstroOs/docs/ui-ux-system.md)**: Brand styles, layouts, sizing, typography scale, and colors.
+```bash
+npm run build
+```
+
+Run linters
+
+```bash
+npm run lint
+```
+
+Run a single app/service
+
+```bash
+# Web (if present at /web)
+cd web && npm run dev
+
+# Admin
+cd apps/admin && npm run dev
+
+# Mobile (Flutter)
+cd apps/mobile && flutter pub get && flutter run
+```
+
+If a package has its own README, follow the per-package instructions for environment variables and platform-specific setup.
+
+## Development workflow
+
+- Use `npm run dev` at the repo root to start workspace dev tasks via Turbo.
+- Make feature branches from `main` (or `develop` if your workflow uses it).
+- Open a pull request with a clear description and link to any relevant issues.
+- CI should run tests and linters automatically — keep changes small and testable.
+
+## Repository layout
+
+```text
+.
+├── apps/                # Application source code (admin, mobile, ...)
+├── web/                 # Primary web client (if used)
+├── services/            # Backend microservices (auth, chat, ai, ...)
+├── packages/            # Shared libraries and UI components
+├── infrastructure/      # Docker / Kubernetes / deployment configs
+├── docs/                # Architecture and design docs
+└── README.md            # This file
+```
+
+Key directories
+- [apps](apps/) — frontend and mobile clients
+- [services](services/) — backend services and APIs
+- [packages](packages/) — shared code (ui, types, utilities)
+- [infrastructure](infrastructure/) — deployment and infra configs
+
+## Environment & configuration
+
+- Use per-service `.env` or `.env.example` files when present.
+- Do NOT commit secrets to the repository; use your CI or secrets manager.
+- CI/CD pipelines should populate production secrets and deploy artifacts from the `build` output.
+
+## Contributing
+
+We welcome contributions. A typical workflow:
+
+1. Fork the repository and create a feature branch.
+2. Run linters and tests locally.
+3. Open a pull request describing the change and any migration steps.
+
+Guidelines
+- Write tests for new functionality where applicable.
+- Keep PRs focused and document behavior changes.
+
+## Code of conduct
+
+Please be respectful and inclusive. Report unacceptable behavior to the maintainers.
+
+## License
+
+This repository does not include a license file yet.
+
+---
+
 
 
 
